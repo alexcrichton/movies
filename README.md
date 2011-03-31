@@ -1,3 +1,8 @@
+## Proposal
+
+- [Presentation](https://docs.google.com/present/edit?id=0AaUaVEtntL3PZGhuazl2MnBfMTYweGN2eGYyZjU&hl=en)
+- Paper (fill this link in)
+
 ## Maximum Overlap of any two titles
 
     ruby max-length.rb
