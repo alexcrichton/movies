@@ -1,2 +1,5 @@
 find
+match
+adj.lst
+max
 *.c.out

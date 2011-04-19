@@ -1,10 +1,10 @@
-CFLAGS = -O4 -Werror -Wextra
+CFLAGS = -O4 -Werror -Wextra -Wall -Wno-unused-parameter
 CC = gcc
 
-all: find
+all: find match
 
-find: find.c
-	$(CC) $(CFLAGS) -o find find.c
+adjacent: match
+	./match > adj.lst
 
 clean:
-	rm find
+	rm find match adj.lst

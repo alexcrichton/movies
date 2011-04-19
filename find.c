@@ -1,7 +1,8 @@
-#include <stdio.h>
 #include <signal.h>
+#include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
+#include <unistd.h>
 
 #define N 7000
 #define M 200
@@ -36,6 +37,10 @@ void record_max() {
   }
 
   FILE *f = fopen(fname, "wb");
+  if (f == NULL) {
+    printf("please 'mkdir max'\n");
+    exit(1);
+  }
 
   for (i = 0; i < max; i++) {
     fprintf(f, "%d ", path[i]);
@@ -44,12 +49,12 @@ void record_max() {
   fclose(f);
 }
 
-int traverse(int cur, int depth) {
+void traverse(int cur, int depth) {
   int i;
 
   if (used[cur] || done) return;
   used[cur] = 1;
-  path[depth] = cur;
+  path[depth - 1] = cur;
 
   if (depth > max) {
     max = depth;
@@ -67,7 +72,7 @@ void sigalarm(int sig) {
 }
 
 int main(int argc, char **argv) {
-  int i, j;
+  int i;
 
   if (argc <= 2) {
     printf("Usage: %s <start> <run-time>\n", argv[0]);
@@ -78,6 +83,10 @@ int main(int argc, char **argv) {
   int t = atol(argv[2]);
 
   FILE *f = fopen("adj.lst", "r");
+  if (f == NULL) {
+    printf("run 'make adjacent' first\n");
+    exit(1);
+  }
 
   for (n = 0; fscanf(f, "%d", &adjl[n]) == 1; n++) {
     for (i = 0; i < adjl[n]; i++) {
@@ -96,7 +105,8 @@ int main(int argc, char **argv) {
     done = 0;
 
     used[start] = 1;
-    traverse(adj[start][i], 1);
+    path[0] = start;
+    traverse(adj[start][i], 2);
     memset(used, 0, sizeof(used));
 
     printf("\tmax so far: %d, switching...\n", max);

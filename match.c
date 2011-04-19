@@ -1,3 +1,17 @@
+/* Generates a list of all adjacent movie titles. Everything is output as an
+ * integer.
+ * 
+ * Output format is:
+ * 
+ *  n a b c ...
+ * 
+ * where line i represents the adjcency list for movie i. Each movie is numbered
+ * based off of its appearance in movies.lst
+ * 
+ *  n -> number of adjacent nodes
+ *  a, b, c, ... -> the adjacent nodes (as integers)
+ */
+
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
@@ -9,6 +23,7 @@
 char words[N][M];
 int num_words = 0;
 
+/* Tokenize a string into a list of integers. Integers = words */
 int tokenize(char *s, int *arr) {
   int word, i, max = strlen(s);
   s[max - 1] = '\0';
@@ -42,6 +57,7 @@ int tokenize(char *s, int *arr) {
   return word;
 }
 
+/* Test if two arrays are connected. Only tests the connection one way */
 int connected(int *a, int alen, int *b, int blen) {
   int aend = alen - 1, i;
 
@@ -83,8 +99,6 @@ int main() {
           printf("oh hoes noes!\n");
           exit(1);
         }
-
-        // printf("Connected: '%s' and '%s'\n", tokens[i], tokens[j]);
 
         c[i][conn_len[i]++] = j;
       }
