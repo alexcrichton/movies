@@ -1,0 +1,9 @@
+#!/usr/bin/env ruby
+
+str = nil
+str = File.read(ARGV[0]) if ARGV.length > 0
+str ||= STDIN.read
+
+lines = File.read('movies.lst').split("\n")
+
+puts str.split(' ').map{ |s| lines[s.to_i] }.join("\n")
