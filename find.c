@@ -5,7 +5,8 @@
 #include <unistd.h>
 
 #define N 7000
-#define M 200
+#define M 146
+#define DEPTH 4
 
 int max = 0, n = 0;
 int adj[N][M];
@@ -14,7 +15,13 @@ int used[N];
 
 int path[400];
 int maxpath[400];
-int done;
+int done, t;
+
+void sigalarm(int sig) {
+  done = 1;
+  printf("\tmax so far: %d, switching...\n", max);
+  fflush(stdout);
+}
 
 int is_file(char *name) {
   FILE *f;
@@ -50,25 +57,39 @@ void record_max() {
 }
 
 void traverse(int cur, int depth) {
-  int i;
+  int i, l, n, d2 = depth + 1;
 
-  if (used[cur] || done) return;
-  used[cur] = 1;
-  path[depth - 1] = cur;
+  if (done) return;
 
   if (depth > max) {
     max = depth;
-    record_max();
+
+    if (depth > 260) {
+      record_max();
+    }
   }
 
-  for (i = 0; i < adjl[cur]; i++) {
-    traverse(adj[cur][i], depth + 1);
+  if (depth == DEPTH) {
+    signal(SIGALRM, sigalarm);
+    alarm(t);
+    done = 0;
   }
-  used[cur] = 0;
-}
 
-void sigalarm(int sig) {
-  done = 1;
+  l = adjl[cur];
+  for (i = 0; i < l; i++) {
+    n = adj[cur][i];
+    if (used[n]) continue;
+
+    used[n] = 1;
+    path[depth] = n;
+    traverse(n, d2);
+    used[n] = 0;
+  }
+
+  if (depth == DEPTH) {
+    alarm(10000);
+    done = 0;
+  }
 }
 
 int main(int argc, char **argv) {
@@ -80,7 +101,7 @@ int main(int argc, char **argv) {
   }
 
   int start = atol(argv[1]);
-  int t = atol(argv[2]);
+  t = atol(argv[2]);
 
   FILE *f = fopen("adj.lst", "r");
   if (f == NULL) {
@@ -99,19 +120,9 @@ int main(int argc, char **argv) {
   printf("Starting at node: %d\n", start);
   fflush(stdout);
 
-  for (i = 0; i < adjl[start]; i++) {
-    signal(SIGALRM, sigalarm);
-    alarm(t);
-    done = 0;
-
-    used[start] = 1;
-    path[0] = start;
-    traverse(adj[start][i], 2);
-    memset(used, 0, sizeof(used));
-
-    printf("\tmax so far: %d, switching...\n", max);
-    fflush(stdout);
-  }
+  used[start] = 1;
+  path[0] = start;
+  traverse(start, 1);
 
   return 0;
 }
