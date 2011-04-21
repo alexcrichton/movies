@@ -1,4 +1,5 @@
 require 'socket'
+require 'rubygems'
 require 'timeout'
 require 'net/ssh'
 require 'highline/import'
@@ -13,7 +14,7 @@ time  = 7
     begin
       Timeout::timeout(0.5) { TCPSocket.new(host, 22).close }
       hosts << host
-    rescue
+    rescue Timeout::Error, SocketError
     end
   }
 end
@@ -35,7 +36,8 @@ hosts.each_with_index do |host, i|
   threads << Thread.start {
     Net::SSH.start(host, user, :password => password) do |ssh|
       (start..last).each { |index|
-        printf "%s: %02.f%% done\n", host, ((index - start).to_f / size) * 100
+        printf "%s: %.02f%% done\n", host, ((index - start).to_f / size) * 100
+        puts "#{host}: on #{index} in (#{start} - #{last})"
         cmd = "cd movies && nice ./find #{index} #{time}"
         ssh.exec!(cmd) do |channel, stream, data|
           puts "#{host}: #{stream} => #{data}"
