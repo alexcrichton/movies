@@ -6,7 +6,6 @@
 
 #define N 7000
 #define M 146
-#define DEPTH 4
 
 int max = 0, n = 0;
 int adj[N][M];
@@ -15,7 +14,7 @@ int used[N];
 
 int path[400];
 int maxpath[400];
-int done, t;
+int done, t, maxdepth;
 
 void sigalarm(int sig) {
   done = 1;
@@ -69,7 +68,7 @@ void traverse(int cur, int depth) {
     }
   }
 
-  if (depth == DEPTH) {
+  if (depth == maxdepth) {
     signal(SIGALRM, sigalarm);
     alarm(t);
     done = 0;
@@ -86,7 +85,7 @@ void traverse(int cur, int depth) {
     used[n] = 0;
   }
 
-  if (depth == DEPTH) {
+  if (depth == maxdepth) {
     alarm(10000);
     done = 0;
   }
@@ -95,13 +94,14 @@ void traverse(int cur, int depth) {
 int main(int argc, char **argv) {
   int i;
 
-  if (argc <= 2) {
-    printf("Usage: %s <start> <run-time>\n", argv[0]);
+  if (argc <= 3) {
+    printf("Usage: %s <start> <run-time> <timeout-depth>\n", argv[0]);
     exit(1);
   }
 
   int start = atol(argv[1]);
   t = atol(argv[2]);
+  maxdepth = atol(argv[3]);
 
   FILE *f = fopen("adj.lst", "r");
   if (f == NULL) {
