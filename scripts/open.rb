@@ -5,7 +5,8 @@ require 'net/ssh'
 require 'highline/import'
 
 hosts = []
-time  = 7
+time  = 10
+depth = 7
 
 ['unix%02d.andrew.cmu.edu', 'ghc%02d.ghc.andrew.cmu.edu'].each do |pat|
   (0..99).each{ |i|
@@ -24,23 +25,26 @@ puts "Available hosts: #{hosts.inspect}"
 user     = ask('User: ')
 password = ask('Password: ') { |q| q.echo = '*' }
 
-max = File.readlines('movies.lst').size + 10
-size = max / hosts.size
+max = File.readlines('movies.lst').size + 1
+ticket = 0
+lock = Mutex.new
 
 threads = []
+hosts.delete 'ghc38.ghc.andrew.cmu.edu'
 
-hosts.each_with_index do |host, i|
-  start = i * size
-  last  = start + size - 1
-
+hosts.each do |host|
   threads << Thread.start {
     Net::SSH.start(host, user, :password => password) do |ssh|
-      (start..last).each { |index|
-        printf "%s: %.02f%% done\n", host, ((index - start).to_f / size) * 100
-        puts "#{host}: on #{index} in (#{start} - #{last})"
-        cmd = "cd movies && nice ./find #{index} #{time}"
+      root = nil
+      loop {
+        lock.synchronize {
+          root = ticket
+          ticket += 1
+        }
+        break if ticket > max
+        cmd = "cd movies && nice ./find #{root} #{time} #{depth}"
         ssh.exec!(cmd) do |channel, stream, data|
-          puts "#{host}: #{stream} => #{data}"
+          puts "#{host}: #{stream}(#{root}/#{ticket}) => #{data}"
         end
       }
     end
