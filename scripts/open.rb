@@ -4,9 +4,9 @@ require 'timeout'
 require 'net/ssh'
 require 'highline/import'
 
-hosts = []
-time  = 10
-depth = 7
+hosts  = []
+time   = 10
+depth  = 7
 ticket = (ARGV[0] || 0).to_i
 
 ['unix%02d.andrew.cmu.edu', 'ghc%02d.ghc.andrew.cmu.edu'].each do |pat|
@@ -26,9 +26,8 @@ puts "Available hosts: #{hosts.inspect}"
 user     = ask('User: ')
 password = ask('Password: ') { |q| q.echo = '*' }
 
-max = File.readlines('movies.lst').size + 1
-lock = Mutex.new
-
+max     = File.readlines('movies.lst').size + 1
+lock    = Mutex.new
 threads = []
 
 hosts.each do |host|
