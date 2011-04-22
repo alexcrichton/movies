@@ -30,7 +30,6 @@ max = File.readlines('movies.lst').size + 1
 lock = Mutex.new
 
 threads = []
-hosts.delete 'ghc38.ghc.andrew.cmu.edu'
 
 hosts.each do |host|
   threads << Thread.start {
