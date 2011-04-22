@@ -4,7 +4,19 @@ require 'timeout'
 require 'net/ssh'
 require 'highline/import'
 
-hosts  = []
+hosts = [
+  'angelshark.ics.cs.cmu.edu',
+  'bambooshark.ics.cs.cmu.edu',
+  'baskingshark.ics.cs.cmu.edu',
+  'blueshark.ics.cs.cmu.edu',
+  'carpetshark.ics.cs.cmu.edu',
+  'catshark.ics.cs.cmu.edu',
+  'hammerheadshark.ics.cs.cmu.edu',
+  'houndshark.ics.cs.cmu.edu',
+  'lemonshark.ics.cs.cmu.edu',
+  'makoshark.ics.cs.cmu.edu'
+]
+
 time   = 10
 depth  = 7
 ticket = (ARGV[0] || 0).to_i
