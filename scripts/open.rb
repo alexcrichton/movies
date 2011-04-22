@@ -7,6 +7,7 @@ require 'highline/import'
 hosts = []
 time  = 10
 depth = 7
+ticket = (ARGV[0] || 0).to_i
 
 ['unix%02d.andrew.cmu.edu', 'ghc%02d.ghc.andrew.cmu.edu'].each do |pat|
   (0..99).each{ |i|
@@ -26,7 +27,6 @@ user     = ask('User: ')
 password = ask('Password: ') { |q| q.echo = '*' }
 
 max = File.readlines('movies.lst').size + 1
-ticket = 0
 lock = Mutex.new
 
 threads = []
