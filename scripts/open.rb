@@ -17,20 +17,22 @@ hosts = [
   'makoshark.ics.cs.cmu.edu'
 ]
 
-time   = 10
-depth  = 7
+time   = 5
+depth  = 10
 ticket = (ARGV[0] || 0).to_i
 
 ['unix%02d.andrew.cmu.edu', 'ghc%02d.ghc.andrew.cmu.edu'].each do |pat|
-  (0..99).each{ |i|
-    host = pat % i
-    puts "Trying: #{host}"
-    begin
-      Timeout::timeout(0.5) { TCPSocket.new(host, 22).close }
-      hosts << host
-    rescue Timeout::Error, SocketError
-    end
-  }
+  (0..99).each{ |i| hosts << (pat % i) }
+end
+
+hosts = hosts.reject do |host|
+  puts "Trying: #{host}"
+  begin
+    Timeout::timeout(0.5) { TCPSocket.new(host, 22).close }
+    false
+  rescue Timeout::Error, SocketError
+    true
+  end
 end
 
 puts "Available hosts: #{hosts.inspect}"
