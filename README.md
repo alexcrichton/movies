@@ -1,33 +1,29 @@
-## Proposal
+# Movie Chain Runner
 
-- [Presentation](https://docs.google.com/present/edit?id=0AaUaVEtntL3PZGhuazl2MnBfMTYweGN2eGYyZjU&hl=en)
-- Paper (fill this link in)
+A description of our solution can be found [here](https://docs.google.com/document/d/13t8VYWdr3uWbwYcAlvhJ9ol7laXt58OLBPBpTzGh3Gw/edit?hl=en&authkey=CKPH0Z8D)
 
-## Maximum Overlap of any two titles
+## Running the code
 
-    ruby max-length.rb
+1. Download the code: `git clone git://github.com/alexcrichton/movies`
+2. Compile the C programs: `make`
+3. Generate the adjacency list: `make adjacent`
+4. Run the program
+  * Run manually via `./find <start> <run-time> <timeout-depth>`
+  * Run distributed via `ruby scripts/open.rb`
 
-The answer we've gotten is __six__, `HENRY PORTRAIT OF A SERIAL KILLER` vs
-`HENRY PORTRAIT OF A SERIAL KILLER PART 2`
+## Running distributed
 
-## Maximum Length of any title
+When running the program distributed, there's a few things you need to make sure are in order:
 
-    ruby max-length.rb
+1. You have a login to CMU machines. If you can SSH into unix.andrew.cmu.edu, you're golden
+2. Your AFS has a checkout of this repository in a folder called `movies`
+3. The code has been compiled in this directory and the adjacency list is already generated.
+  * This implies `~/movies/find` is a program and `~/movies/adj.lst` is a file containing the adjacency list
 
-So far it's __92__
+## Determining the Maximum Chain
 
-## Number of unique words
+The `find` program incrementally saves its progress so you can check up on it at any point in time.
 
-    ruby unique-words.rb
+Every maximum found is saved to `max/max-%d` where %d is the length of the chain that was found. These files contain space-delimited integers which correspond to movie titles.
 
-So far it's __5714__
-
-## Ideas
-
-- 5147 words means that everything can fit into 13 bits
-- Comparing integers is faster than comparing strings
-  - Store all words as integers (hashed, 13+ bits)
-- Can pack prefixes/suffixes into 32-64 bits (still integer comparison)
-- Generate list of 2 movie titles concatenated
-  - Save to disk?
-  - Generate 3-long based off of 1 and 2 length titles?
+To get the actual list of movie titles, run `./translate max/max-XXX`. This command will spit out the actual movie titles for enjoyment. There will be one movie title per line.
