@@ -16,8 +16,10 @@ A description of our solution can be found [here](https://docs.google.com/docume
 When running the program distributed, there's a few things you need to make sure are in order:
 
 1. You have a login to CMU machines. If you can SSH into unix.andrew.cmu.edu, you're golden
-2. Your AFS has a checkout of this repository in a folder called `movies`
-3. The code has been compiled in this directory and the adjacency list is already generated.
+2. You have ruby installed with the `highline` and `net-ssh` gems installed.
+  * If ruby is installed, you can install the gems via `gem install highline net-ssh`
+3. Your AFS has a checkout of this repository in a folder called `movies`
+4. The code has been compiled in this directory and the adjacency list is already generated.
   * This implies `~/movies/find` is a program and `~/movies/adj.lst` is a file containing the adjacency list
 
 ## Determining the Maximum Chain
