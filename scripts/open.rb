@@ -53,7 +53,7 @@ hosts.each do |host|
           root = ticket
           ticket += 1
         }
-        break if ticket > max
+        break if root > max
         cmd = "cd movies && nice ./find #{root} #{time} #{depth}"
         ssh.exec!(cmd) do |channel, stream, data|
           puts "#{host}: #{stream}(#{root}/#{ticket}) => #{data}"
